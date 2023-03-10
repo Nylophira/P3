@@ -75,7 +75,7 @@ h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
-;
+
 }
 
 h2{
@@ -84,20 +84,41 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+/******************** Modif et rajout de mon CSS ****************/
+
 nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
+	
 
 }
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+	margin: 0 15px;
 }
 
+
+nav li a {
+	text-decoration: none;
+	color: black;
+
+}
+
+li a:hover {
+	color: #B1663C;
+}
+
+.ici {
+	font-weight: 700;
+}
+
+/***********************************/
 li:hover {
 	color: #B1663C;
 }
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -154,7 +175,7 @@ li:hover {
 }
 
 
-
+/************************************/
 
 
 .gallery {
@@ -180,22 +201,43 @@ margin: auto;
 #contact h2{
 	margin-bottom: 20px;
 }
-#contact form {
+
+/******************** Modif et rajout du CSS ****************/
+
+.connexion {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+
+form {
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input {
+.connexion form {
+	width: 35%;
+}
+
+.connexion a {
+	color: black;
+}
+
+input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+
+label {
 	margin: 2em 0 1em 0;
 }
+
+/************************************/
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
