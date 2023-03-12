@@ -1,4 +1,4 @@
-let reponseServeur;
+let token;
 ///// Envoi des données collectés sur le formulaire de connexion  ///
 function envoiLogin () {
     const form = document.querySelector(".formCo");
@@ -14,19 +14,34 @@ function envoiLogin () {
             headers: {"Content-Type":"application/json"},
             body: packJSON
         })
-        .then (function (response) {
-            
-        if (response.ok) {
-            console.log ("ok c'est cool");
-        } else {
-            console.log("tu t'es planté non ?");
-        } 
+        /////récupère la réponse du serveur
+        .then (response => {
+            if (response.ok) {
+               return response.json();
+            } else {
+                throw new Error("Mauvais identifiants");
+            }
+        })
+        //// si ok redirige et récupère la valeur de la propriété récupérée
+        .then (data => {
+                token = data.token;
+                window.location.replace("index.html");
+                console.log(token);  
+        })
+        .catch(erreur => {
+            message(erreur);
+            });
     })
-        //.then (response => response.json())
-        /* .then (data => reponseServeur = data)
-        .catch(error => console.alert(error));
-        console.log(reponseServeur); */
-    })
+   
 }
 
-envoiLogin();
+/////Message d'erreur  ////
+function message (MessageErreur) {
+    const erreur = document.querySelector(".erreur");
+    const message = document.createElement("span");
+    message.innerText = MessageErreur;
+    erreur.appendChild(message);
+}
+
+
+envoiLogin(); 
