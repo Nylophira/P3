@@ -1,6 +1,17 @@
 let repPhoto;
+
 const recupFiltres = await fetch ("http://localhost:5678/api/categories");
 const repFiltres = await recupFiltres.json();
+
+
+const tokenB = window.localStorage.getItem("mdp");
+
+if (tokenB) {
+  console.log(`hey ${tokenB}`); 
+}
+
+
+
 
 function main () {
   fetch ("http://localhost:5678/api/works")
@@ -14,7 +25,6 @@ function main () {
 
 /////////// Code pour récupérer les projets sur l'API //////////
 function regenerer (projet) {
-    //function regenerer (repPhoto, repFiltres) {
   const gallerie = document.querySelector(".gallery");
 
   for (let i=0; i<projet.length; i++) {
