@@ -53,11 +53,63 @@ body {
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
+/******************** Modif et rajout du CSS ****************/
 header {
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
-	margin: 50px 0
+	
 }
+
+.intro {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: space-between;
+	margin: 50px 0;
+}
+
+.contenuBandeau {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	background-color: black;
+	padding: 10px 0px;
+}
+
+.fa-pen-to-square {
+	color: white;
+	font-size: 16px;
+	margin: 0px 5px;
+}
+
+.contenuBandeau h2 {
+	font-size: 16px;
+	color: white;
+	font-weight: 400;
+	font-family: 'Work Sans';
+	margin: 0px 5px;
+
+}
+
+.contenuBandeau button {
+	
+	background-color: white;
+	padding: 10px 15px;
+	border-radius: 20px;
+	color: black;
+	font-size: 14px;
+	margin: 0px 5px;
+	font-family: 'Work Sans';
+	font-weight: 500;
+
+
+}
+/***************************************************/
+
 section {
 	margin: 50px 0
 }
@@ -85,6 +137,7 @@ h2{
 	color: #1D6154
 }
 /******************** Modif et rajout de mon CSS ****************/
+
 
 nav ul {
 	display: flex;
@@ -114,6 +167,10 @@ li a:hover {
 	font-weight: 700;
 }
 
+.logout {
+	display: none;
+}
+
 /***********************************/
 li:hover {
 	color: #B1663C;
@@ -139,15 +196,61 @@ li:hover {
 	margin-bottom: 1em;
 }
 
-#introduction p {
+
+/******************** Modif et rajout de mon CSS ****************/
+
+#introduction p:not(.icoModif p) {
 	margin-bottom: 0.5em;
 }
-#portfolio h2 {
-	text-align: center;
-	margin-bottom: 1em;
+
+.icoModif {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text-decoration: none;
+	color: black;
 }
 
-/******************** Rajout de mon CSS ****************/
+
+.icoModif .fa-pen-to-square {
+	color :black;
+	margin: 0px 10px;
+}
+
+.icoModif p {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 0;
+}
+
+.portrait {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+ .portrait .icoModif {
+	margin: 10px 55px;
+} 
+
+.projets {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 3em;
+
+}
+
+.projets h2 {
+	margin-right: 15px;
+}
+
+
+#portfolio h2 {
+	text-align: center;
+}
 
 .filtres {
 	display: flex;

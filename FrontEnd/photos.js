@@ -6,12 +6,6 @@ const repFiltres = await recupFiltres.json();
 
 const tokenB = window.localStorage.getItem("mdp");
 
-if (tokenB) {
-  console.log(`hey ${tokenB}`); 
-}
-
-
-
 
 function main () {
   fetch ("http://localhost:5678/api/works")
@@ -41,6 +35,57 @@ function regenerer (projet) {
   }
 
 }
+
+///////////// La partie "administrateur" ////////////
+function bandeau () {
+  const bandeau = document.querySelector(".modifBandeau");
+  const contenant = document.createElement("div");
+  contenant.className = "contenuBandeau";
+  const icone = document.createElement("i");
+  icone.className ="fa-regular fa-pen-to-square";
+  const titre = document.createElement("h2");
+  titre.innerText = "Mode édition";
+  const boutonModif = document.createElement ("button");
+  boutonModif.innerText = "publier les changements";
+
+  bandeau.appendChild(contenant);
+  contenant.appendChild(icone);
+  contenant.appendChild(titre);
+  contenant.appendChild(boutonModif);
+}
+
+function coDeco () {
+    document.querySelector(".logout").style.display = "block";
+    document.querySelector(".login").style.display = "none";
+    document.querySelector(".filtres").style.display ="none";
+  
+  
+}
+
+function icoModif (cible) {
+ const parent = document.querySelector(cible);
+ const conteneur = document.createElement("a");
+/*  a changer pour la modale */
+ conteneur.setAttribute("href","#")
+ conteneur.className = "icoModif";
+ const icone = document.createElement("i");
+ icone.className = "fa-regular fa-pen-to-square";
+ const texte = document.createElement("p");
+ texte.innerText = "modifier";
+
+ parent.appendChild(conteneur);
+ conteneur.appendChild(icone);
+ conteneur.appendChild(texte);
+} 
+
+function deco () {
+  const logout = document.querySelector(".logout");
+  logout.addEventListener ("click", function () {
+    tokenB = window.localStorage.removeItem("mdp");
+  }
+  ) 
+}
+
 
 ///////// Mise en place des filtres /////
  const filtres = document.querySelector(".filtres");
@@ -79,4 +124,15 @@ for (let i = 0; i<repFiltres.length+1; i++ ) {
   
 }
 
+/////////// Appel des fonctions /////////
 main ();
+
+if (tokenB) {
+  /* console.log(`hey ${tokenB}`);  */
+  bandeau();
+  coDeco();
+  deco();
+  icoModif(".portrait");
+  icoModif(".projets")
+
+} 
