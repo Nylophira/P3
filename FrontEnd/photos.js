@@ -30,28 +30,40 @@ function regenerer (projet, cible) {
   
   for (let i=0; i<projet.length; i++) {
     const figure = projet[i];
+    /* let clicModalePortrait = document.querySelector("#idPortrait"); */
+    /* let clicModaleProjets = document.querySelector("#idProjets"); */
+
     //  Création de l'HTML pour les photos des projets
     const contPhoto = document.createElement("figure");
     const photo = document.createElement("img");
     photo.src = figure.imageUrl;
     const legende = document.createElement("figcaption");
-    legende.innerText =  figure.title;
+   
+
+    if (quelType) {
+      legende.innerText = "editer";
+    } else {
+       legende.innerText =  figure.title;
+    }
     gallerie.appendChild(contPhoto);
     contPhoto.appendChild(photo);
     contPhoto.appendChild(legende);
+
   }
 
 } 
 
 
-function creeModale (titre) {
+function creeModale (titre, type) {
  const modaleProjet = ".modaleProjet";
  queltitre = titre;
+ quelType = type;
 
   main(modaleProjet);
   
 }
 
+let quelType;
 
 /// Pour faire apparaitre tous les éléments du mode admin
 if (tokenB) {
@@ -59,12 +71,16 @@ if (tokenB) {
   bandeau();
   coDeco();
   deco();
-  icoModif(".portrait");
-  icoModif(".projets");
+  icoModif(".portrait", "idPortrait");
+  icoModif(".projets","idProjets");
 
-  document.querySelectorAll(".icoModif").forEach (a => {
-    a.addEventListener('click', creeModale("Galerie Photos"));
-})
+  /* document.querySelectorAll(".icoModif").forEach (a => {
+    a.addEventListener('click', creeModale("Galerie Photos")); })*/
+    document.querySelector("#idProjets").addEventListener ("click", function () {
+      const clicModaleProjets = "idP";
+      creeModale("GaleriePhotos", clicModaleProjets);
+    });
+
 
 }
 
@@ -97,12 +113,13 @@ function coDeco () {
   
 }
 
-function icoModif (cible) {
+function icoModif (cible, quelIcone) {
  const parent = document.querySelector(cible);
  const conteneur = document.createElement("a");
 /*  a changer pour la modale */
  conteneur.setAttribute("href","#")
  conteneur.className = "icoModif";
+ conteneur.id = quelIcone;
  const icone = document.createElement("i");
  icone.className = "fa-regular fa-pen-to-square";
  const texte = document.createElement("p");
