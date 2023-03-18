@@ -1,4 +1,6 @@
 let repPhoto;
+const photos = ".gallery";
+let queltitre;
 
 const recupFiltres = await fetch ("http://localhost:5678/api/categories");
 const repFiltres = await recupFiltres.json();
@@ -7,20 +9,25 @@ const repFiltres = await recupFiltres.json();
 const tokenB = window.localStorage.getItem("mdp");
 
 
-function main () {
+ function main (cible) {
   fetch ("http://localhost:5678/api/works")
   .then (Response => Response.json())
   .then (data=> {
     repPhoto = data;
-    regenerer(repPhoto);
+    regenerer(repPhoto, cible);
   })
   .catch (error => console.error(error));
 }
 
 /////////// Code pour récupérer les projets sur l'API //////////
-function regenerer (projet) {
-  const gallerie = document.querySelector(".gallery");
-
+function regenerer (projet, cible) {
+  const gallerie = document.querySelector(cible);
+  if (cible == ".modaleProjet") {
+    const titreModale = document.createElement("h2");
+    titreModale.innerText = queltitre;
+    gallerie.appendChild(titreModale);
+  }
+  
   for (let i=0; i<projet.length; i++) {
     const figure = projet[i];
     //  Création de l'HTML pour les photos des projets
@@ -34,7 +41,35 @@ function regenerer (projet) {
     contPhoto.appendChild(legende);
   }
 
+} 
+
+
+function creeModale (titre) {
+ const modaleProjet = ".modaleProjet";
+ queltitre = titre;
+
+  main(modaleProjet);
+  
 }
+
+
+/// Pour faire apparaitre tous les éléments du mode admin
+if (tokenB) {
+  // console.log(`hey ${tokenB}`);  
+  bandeau();
+  coDeco();
+  deco();
+  icoModif(".portrait");
+  icoModif(".projets");
+
+  document.querySelectorAll(".icoModif").forEach (a => {
+    a.addEventListener('click', creeModale("Galerie Photos"));
+})
+
+}
+
+
+
 
 ///////////// La partie "administrateur" ////////////
 function bandeau () {
@@ -118,21 +153,15 @@ for (let i = 0; i<repFiltres.length+1; i++ ) {
         return id.id == [i];
       }
     })
-    document.querySelector(".gallery").innerHTML = '';
-    regenerer(saufObjet);
+    document.querySelector(photos).innerHTML = '';
+    regenerer(saufObjet, photos);
   })
   
 }
 
-/////////// Appel des fonctions /////////
-main ();
+//////////////// Appel des fonctions ///////////////
 
-if (tokenB) {
-  /* console.log(`hey ${tokenB}`);  */
-  bandeau();
-  coDeco();
-  deco();
-  icoModif(".portrait");
-  icoModif(".projets")
+/// Pour faire apparaitre les projets de la page d'accueil
+main (photos); 
 
-} 
+

@@ -33,6 +33,7 @@
             })
             .catch(erreur => {
                 message(erreur);
+
                 });
         })
     }  
@@ -45,9 +46,15 @@
 /////Message d'erreur  ////
 function message (MessageErreur) {
     const erreur = document.querySelector(".erreur");
-    const message = document.createElement("span");
-    message.innerText = MessageErreur;
-    erreur.appendChild(message);
+    let message = document.querySelector(".messageErreur");
+   
+    if (!message) {
+         message = document.createElement("span");
+        message.className = "messageErreur";
+        message.innerText = MessageErreur;    
+        erreur.appendChild(message);
+    } 
+   
 }
 
 

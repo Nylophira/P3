@@ -62,12 +62,19 @@ header {
 	
 }
 
+.modifBandeau {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
 .intro {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
 	justify-content: space-between;
-	margin: 50px 0;
+	margin: 80px 0 50px 0;
 }
 
 .contenuBandeau {
@@ -311,6 +318,12 @@ margin: auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.messageErreur {
+	color: red;
+	font-weight: 700;
+	font-size: 20px;
 }
 
 
