@@ -22,10 +22,13 @@ const tokenB = window.localStorage.getItem("mdp");
 /////////// Code pour récupérer les projets sur l'API //////////
 function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
+  const conteneur = document.createElement("div");
   if (cible == ".modaleProjet") {
     const titreModale = document.createElement("h2");
     titreModale.innerText = queltitre;
     gallerie.appendChild(titreModale);
+    gallerie.appendChild(conteneur);
+    
   }
   
   for (let i=0; i<projet.length; i++) {
@@ -34,6 +37,7 @@ function regenerer (projet, cible) {
     /* let clicModaleProjets = document.querySelector("#idProjets"); */
 
     //  Création de l'HTML pour les photos des projets
+   
     const contPhoto = document.createElement("figure");
     const photo = document.createElement("img");
     photo.src = figure.imageUrl;
@@ -42,10 +46,14 @@ function regenerer (projet, cible) {
 
     if (quelType) {
       legende.innerText = "editer";
+      conteneur.appendChild(contPhoto);
+      
     } else {
        legende.innerText =  figure.title;
+       gallerie.appendChild(contPhoto);
+       
     }
-    gallerie.appendChild(contPhoto);
+    
     contPhoto.appendChild(photo);
     contPhoto.appendChild(legende);
 
@@ -60,6 +68,7 @@ function creeModale (titre, type) {
  quelType = type;
 
   main(modaleProjet);
+  ouvreModale();
   
 }
 
@@ -76,15 +85,21 @@ if (tokenB) {
 
   /* document.querySelectorAll(".icoModif").forEach (a => {
     a.addEventListener('click', creeModale("Galerie Photos")); })*/
-    document.querySelector("#idProjets").addEventListener ("click", function () {
+    document.querySelector("#idProjets").addEventListener ("click", function (e) {
+      e.preventDefault();
       const clicModaleProjets = "idP";
-      creeModale("GaleriePhotos", clicModaleProjets);
+      creeModale("Galerie photos", clicModaleProjets);
     });
 
 
 }
 
+function ouvreModale () {
+  
+  const target = document.querySelector(".modaleCont");
+  target.style.display = "block";
 
+}
 
 
 ///////////// La partie "administrateur" ////////////

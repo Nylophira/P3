@@ -376,3 +376,49 @@ footer nav ul {
 	margin: 2em
 }
 
+/******************** Partie modale ****************/
+
+.modaleProjet {
+	position: fixed;
+	width: 40%;
+	height: 60%;
+	background-color: white;
+	overflow: auto;
+	padding: 20px;
+	top:25%;
+	left:25%;
+	display: flex;
+	flex-direction: column;
+
+}
+
+.modaleCont {
+	display: none;
+	background-color: rgba(0, 0, 0, 0.648);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+}
+
+ .modaleCont div {
+
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	height: 50%;
+
+}
+
+ .modaleCont figure {
+
+	height: 50%;
+	width: auto;
+	padding: 10px;
+}
+
+ .modaleCont img {
+	width: auto;
+	height: 100%;
+}
