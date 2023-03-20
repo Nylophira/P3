@@ -25,9 +25,16 @@ function regenerer (projet, cible) {
   const conteneur = document.createElement("div");
   if (cible == ".modaleProjet") {
     const titreModale = document.createElement("h2");
+    const bouton = document.createElement("button");
+    const href = document.createElement("a");
     titreModale.innerText = queltitre;
+    bouton.innerText ="Ajouter une photo";
+    href.innerText = "Supprimer la gallerie";
+    href.setAttribute("href","#");
     gallerie.appendChild(titreModale);
     gallerie.appendChild(conteneur);
+    gallerie.appendChild(bouton);
+    gallerie.appendChild(href);
     
   }
   
