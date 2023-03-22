@@ -397,7 +397,7 @@ footer nav ul {
 	flex-direction: column;
 	background-color: white;
 	overflow: auto;
-	padding: 20px;
+	padding: 30px;
 	top:10%;
 	left:25%;
 	height: 80%;
@@ -419,11 +419,18 @@ footer nav ul {
 
 }
 
+ .fa-xmark {
+  align-self: flex-end;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
 .modaleProjet h2 {
 
 	color:black;
 	font-weight: 400;
 	font-size: 26px;
+	font-family: "Work Sans";
 }
 
  .modaleCont figure {

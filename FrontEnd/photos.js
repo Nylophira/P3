@@ -24,13 +24,16 @@ function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
   const conteneur = document.createElement("div");
   if (cible == ".modaleProjet") {
+    const click = document.createElement("i");
     const titreModale = document.createElement("h2");
     const bouton = document.createElement("button");
     const href = document.createElement("a");
+    click.className ="fa-solid fa-xmark";
     titreModale.innerText = queltitre;
     bouton.innerText ="Ajouter une photo";
     href.innerText = "Supprimer la gallerie";
     href.setAttribute("href","#");
+    gallerie.appendChild(click);
     gallerie.appendChild(titreModale);
     gallerie.appendChild(conteneur);
     gallerie.appendChild(bouton);
@@ -71,11 +74,12 @@ function regenerer (projet, cible) {
 
 function creeModale (titre, type) {
  const modaleProjet = ".modaleProjet";
+ let boutonClick;
  queltitre = titre;
  quelType = type;
 
   main(modaleProjet);
-  ouvreModale();
+  ouvreModale(boutonClick);
   
 }
 
@@ -101,13 +105,38 @@ if (tokenB) {
 
 }
 
-function ouvreModale () {
+let target;
+
+
+function ouvreModale (croix) {
   
-  const target = document.querySelector(".modaleCont");
+  target = document.querySelector(".modaleCont");
   target.style.display = "block";
+  target.setAttribute("aria-hidden", false);
+  target.setAttribute("aria-modal", true);
+  target.addEventListener("click", fermeModale);
+  document.querySelector(".modaleProjet").addEventListener("click", pasClick);
+  croix = document.querySelector(".fa-xmark");
+  console.log(croix);
+  if (croix) {
+    console.log("ça fonctionne ?");
+    croix.addEventListener("click", pasClick);
+  }
 
 }
 
+function fermeModale () {
+  const modale = document.querySelector(".modaleProjet");
+  target.style.display = "none";
+  target.setAttribute("aria-hidden", true);
+  target.setAttribute("aria-modal", false);
+  modale.innerHTML="";
+
+}
+
+function pasClick (e) {
+  e.stopPropagation();
+}
 
 ///////////// La partie "administrateur" ////////////
 function bandeau () {
