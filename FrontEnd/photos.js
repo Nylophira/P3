@@ -70,6 +70,17 @@ function regenerer (projet, cible) {
     }
     
     contPhoto.appendChild(photo);
+    
+    /// Rajout des petits icones sur les photos en modale
+    if (quelType) {
+      const contPoubelle = document.createElement("button");
+      contPoubelle.className = "poubelle";
+      const poubelle = document.createElement("i");
+      poubelle.className = "fa-regular fa-trash-can";
+      contPhoto.appendChild(contPoubelle);
+      contPoubelle.appendChild(poubelle);
+    }
+
     contPhoto.appendChild(legende);
 
   }
