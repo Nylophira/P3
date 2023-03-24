@@ -1,6 +1,8 @@
 let repPhoto;
 const photos = ".gallery";
 let queltitre;
+let quelType;
+let target;
 
 const recupFiltres = await fetch ("http://localhost:5678/api/categories");
 const repFiltres = await recupFiltres.json();
@@ -8,7 +10,7 @@ const repFiltres = await recupFiltres.json();
 
 const tokenB = window.localStorage.getItem("mdp");
 
-
+///// Récupère le fichier json et affiche les projets ////
  function main (cible) {
   fetch ("http://localhost:5678/api/works")
   .then (Response => Response.json())
@@ -24,36 +26,39 @@ function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
   const conteneur = document.createElement("div");
   if (cible == ".modaleProjet") {
+    const boutonCroix = document.createElement("button");
     const click = document.createElement("i");
     const titreModale = document.createElement("h2");
     const bouton = document.createElement("button");
     const href = document.createElement("a");
+    boutonCroix.id ="fermeture"
     click.className ="fa-solid fa-xmark";
     titreModale.innerText = queltitre;
     bouton.innerText ="Ajouter une photo";
     href.innerText = "Supprimer la gallerie";
     href.setAttribute("href","#");
-    gallerie.appendChild(click);
+    gallerie.appendChild(boutonCroix);
+    boutonCroix.appendChild(click);
     gallerie.appendChild(titreModale);
     gallerie.appendChild(conteneur);
     gallerie.appendChild(bouton);
     gallerie.appendChild(href);
-    
+    /// Ouverture de la modale
+    const  fermeture = document.querySelector("#fermeture");
+    ouvreModale(fermeture); 
+
+
   }
   
   for (let i=0; i<projet.length; i++) {
     const figure = projet[i];
-    /* let clicModalePortrait = document.querySelector("#idPortrait"); */
-    /* let clicModaleProjets = document.querySelector("#idProjets"); */
 
     //  Création de l'HTML pour les photos des projets
-   
     const contPhoto = document.createElement("figure");
     const photo = document.createElement("img");
     photo.src = figure.imageUrl;
     const legende = document.createElement("figcaption");
    
-
     if (quelType) {
       legende.innerText = "editer";
       conteneur.appendChild(contPhoto);
@@ -71,72 +76,44 @@ function regenerer (projet, cible) {
 
 } 
 
-
-function creeModale (titre, type) {
- const modaleProjet = ".modaleProjet";
- let boutonClick;
- queltitre = titre;
- quelType = type;
-
-  main(modaleProjet);
-  ouvreModale(boutonClick);
+///////// Mise en place des filtres /////
+function mesFiltres () {
+  const filtres = document.querySelector(".filtres");
+  for (let i=-1; i<repFiltres.length; i++) {
+    const filtre = repFiltres[i];
+    const bouton = document.createElement("button");
+    if (filtre ==null) {
+      bouton.className = "Tous";
+      bouton.innerText = "Tous";
+    } else {
+      bouton.innerText = filtre.name;
+      bouton.className = filtre.name;
+    }
   
-}
-
-let quelType;
-
-/// Pour faire apparaitre tous les éléments du mode admin
-if (tokenB) {
-  // console.log(`hey ${tokenB}`);  
-  bandeau();
-  coDeco();
-  deco();
-  icoModif(".portrait", "idPortrait");
-  icoModif(".projets","idProjets");
-
-  /* document.querySelectorAll(".icoModif").forEach (a => {
-    a.addEventListener('click', creeModale("Galerie Photos")); })*/
-    document.querySelector("#idProjets").addEventListener ("click", function (e) {
-      e.preventDefault();
-      const clicModaleProjets = "idP";
-      creeModale("Galerie photos", clicModaleProjets);
-    });
-
-
-}
-
-let target;
-
-
-function ouvreModale (croix) {
+    filtres.appendChild(bouton);
   
-  target = document.querySelector(".modaleCont");
-  target.style.display = "block";
-  target.setAttribute("aria-hidden", false);
-  target.setAttribute("aria-modal", true);
-  target.addEventListener("click", fermeModale);
-  document.querySelector(".modaleProjet").addEventListener("click", pasClick);
-  croix = document.querySelector(".fa-xmark");
-  console.log(croix);
-  if (croix) {
-    console.log("ça fonctionne ?");
-    croix.addEventListener("click", pasClick);
   }
-
+  
+  ////// Filtrer les catégories 
+  const filtreClic = document.querySelectorAll("button");
+  for (let i = 0; i<repFiltres.length+1; i++ ) {
+    filtreClic[i].addEventListener("click", function () {
+   
+      const saufObjet = repPhoto.filter( function (objet) {
+        const id = objet.category;
+        if (i == 0) {
+          return id.id;
+        } else {
+          return id.id == [i];
+        }
+      })
+      document.querySelector(photos).innerHTML = '';
+      regenerer(saufObjet, photos);
+    })
+    
+  }
 }
 
-function fermeModale () {
-  const modale = document.querySelector(".modaleProjet");
-  target.style.display = "none";
-  target.setAttribute("aria-hidden", true);
-  target.setAttribute("aria-modal", false);
-  modale.innerHTML="";
-
-}
-
-function pasClick (e) {
-  e.stopPropagation();
-}
 
 ///////////// La partie "administrateur" ////////////
 function bandeau () {
@@ -190,46 +167,65 @@ function deco () {
 }
 
 
-///////// Mise en place des filtres /////
- const filtres = document.querySelector(".filtres");
-for (let i=-1; i<repFiltres.length; i++) {
-  const filtre = repFiltres[i];
-  const bouton = document.createElement("button");
-  if (filtre ==null) {
-    bouton.className = "Tous";
-    bouton.innerText = "Tous";
-  } else {
-    bouton.innerText = filtre.name;
-    bouton.className = filtre.name;
-  }
+/////// Fonctions liées à l'ouverture de la modale ////
 
-  filtres.appendChild(bouton);
-
-}
-
-
-////// Filtrer les catégories 
-const filtreClic = document.querySelectorAll("button");
-for (let i = 0; i<repFiltres.length+1; i++ ) {
-  filtreClic[i].addEventListener("click", function () {
- 
-    const saufObjet = repPhoto.filter( function (objet) {
-      const id = objet.category;
-      if (i == 0) {
-        return id.id;
-      } else {
-        return id.id == [i];
-      }
-    })
-    document.querySelector(photos).innerHTML = '';
-    regenerer(saufObjet, photos);
-  })
+//// Crée les éléments de la modale en récupérent les données json
+function creeModale (titre, type) {
+  const modaleProjet = ".modaleProjet";
   
+  queltitre = titre;
+  quelType = type;
+ 
+   main(modaleProjet);
+ 
+ }
+
+function ouvreModale (croix) {
+  
+  target = document.querySelector(".modaleCont");
+  target.style.display = "block";
+  target.setAttribute("aria-hidden", false);
+  target.setAttribute("aria-modal", true);
+  target.addEventListener("click", fermeModale);
+  document.querySelector(".modaleProjet").addEventListener("click", pasClick);
+  croix.addEventListener("click", fermeModale);
+ 
+
 }
+
+function fermeModale () {
+  const modale = document.querySelector(".modaleProjet");
+  target.style.display = "none";
+  target.setAttribute("aria-hidden", true);
+  target.setAttribute("aria-modal", false);
+  modale.innerHTML="";
+
+}
+
+function pasClick (e) {
+  e.stopPropagation();
+}
+
 
 //////////////// Appel des fonctions ///////////////
 
 /// Pour faire apparaitre les projets de la page d'accueil
 main (photos); 
+mesFiltres();
 
+/// Pour faire apparaitre tous les éléments du mode admin
+if (tokenB) {
+  // console.log(`hey ${tokenB}`);  
+  bandeau();
+  coDeco();
+  deco();
+  icoModif(".portrait", "idPortrait");
+  icoModif(".projets","idProjets");
 
+  document.querySelector("#idProjets").addEventListener ("click", function (e) {
+    e.preventDefault();
+    const clicModaleProjets = "idP";
+    creeModale("Galerie photos", clicModaleProjets);
+  });
+
+}

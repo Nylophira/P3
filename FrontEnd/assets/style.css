@@ -466,3 +466,10 @@ hr {
 	font-weight: 700;
 	font-family: "syne";
 }
+
+#fermeture {
+	background-color: white;
+	color: black;
+	border: none;
+	align-self: flex-end;
+}
