@@ -11,12 +11,15 @@ const repFiltres = await recupFiltres.json();
 const tokenB = window.localStorage.getItem("mdp");
 
 ///// Récupère le fichier json et affiche les projets ////
- function main (cible) {
-  fetch ("http://localhost:5678/api/works")
+ /* function main (cible,type) {
+  fetch ("http://localhost:5678/api/works",type) */
+  function main (cible) {
+    fetch ("http://localhost:5678/api/works")
   .then (Response => Response.json())
   .then (data=> {
     repPhoto = data;
     regenerer(repPhoto, cible);
+    /* console.log("ok !"); */
   })
   .catch (error => console.error(error));
 }
@@ -25,7 +28,9 @@ const tokenB = window.localStorage.getItem("mdp");
 function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
   const conteneur = document.createElement("div");
+  /* console.log(cible); */
 
+  ////Spécial modale
   if (cible == ".modaleProjet") {
     const boutonCroix = document.createElement("button");
     const click = document.createElement("i");
@@ -37,7 +42,7 @@ function regenerer (projet, cible) {
     titreModale.innerText = queltitre;
     bouton.className = "ajoutPhoto";
     bouton.innerText ="Ajouter une photo";
-    href.innerText = "Supprimer la gallerie";
+    href.innerText = "Supprimer la galerie";
     href.setAttribute("href","#");
     gallerie.appendChild(boutonCroix);
     boutonCroix.appendChild(click);
@@ -89,84 +94,74 @@ function regenerer (projet, cible) {
       const contPoubelle = document.createElement("button");
       const poubelle = document.createElement("i");
       contPoubelle.className = "poubelle";
-      contPoubelle.id = `n°${i+1}-${figure.id}`;
+      contPoubelle.id = figure.id;
       poubelle.className = "fa-regular fa-trash-can";
       contPhoto.appendChild(contPoubelle);
       contPoubelle.appendChild(poubelle);
+        
     }
-
     contPhoto.appendChild(legende);
 
   }
 
+    ///Effacement des photos
+    const quiEffacer = document.querySelectorAll(".poubelle");
+    for(let x=0;x<quiEffacer.length;x++) {
+      quiEffacer[x].addEventListener("click", function () {
+        let effacement = quiEffacer[x].id
+        effacer(effacement);
+          /* const effaceToi = repPhoto.filter( function (photo) {
+            return !(photo.id == quiEffacer[x+1].id);
+            })
+          console.log(effaceToi); */
+      })
+    }
 }
 
-function ouvreModaleAjouter (debutCont, rajout) {
-
-  ///Efface la première modale
-  const disparition = document.querySelector(".modaleProjet div");
-  disparition.innerHTML="";
-
-  ///Retour arrière
-  const boutonRetour= document.createElement("button");
-  const retour = document.createElement("i");
-  boutonRetour.id = "retour";
-  retour.className = "fa-solid fa-arrow-left-long";
-  debutCont.appendChild(boutonRetour);
-  boutonRetour.appendChild(retour);
-  document.querySelector("#retour").addEventListener("click", function (e){
-    e.preventDefault();
-    debutCont.innerHTML ="";
-    creeModale("Galerie photos", "idP");
+ function effacer (bouton) {
+  console.log(tokenB);
+  fetch ("http://localhost:5678/api/works/2", {
+    method: "DELETE",
+    headers: {"Authorization" : `Bearer ${tokenB}`}
   })
+  .then (response => {
+    if (response.ok) {
+      /* if(response.status === 200) { */
+      console.log("suppression ok");
+      effacerFiltre(bouton);
+      
+      /* const effaceToi = repPhoto.filter( function (photo) {
+        console.log(effaceToi);
+        return !(photo.id == bouton);
+        }) */
+      /*  return response.json();  */
+   } else {
+       throw new Error("Erreur au moment de la suppression");
+   }
+  })
+  .catch(erreur => {
+    console.error(erreur);
 
-  ///Ajoute les nouveaux éléments
-  rajout.className = "modaleAjouter";
-  const contAjoutPh = document.createElement("div");
-  const imagePhoto = document.createElement("i");
-  const boutonPhoto = document.createElement("button");
-  const txtType = document.createElement("p");
-  const formulaire = document.createElement("form");
-  const labelTitre = document.createElement("label");
-  const inputTitre = document.createElement("input");
-  const labelCat = document.createElement("label");
-  const selectCat = document.createElement("select");
+    }) 
+/*   const methode = {
+    method: "DELETE",
+    headers: {"Authorization" : tokenB}
+  } */
+  /* const effaceToi = repPhoto.filter( function (photo) {
+    return !(photo.id == bouton);
+    })
+  console.log(effaceToi); */
+} 
 
-  contAjoutPh.className = "contAjoutPhoto";
-  imagePhoto.className = "fa-regular fa-image";
-  boutonPhoto.innerText = "+ Ajouter photo";
-  txtType.innerText = "jpg, png : 4mo max";
-  labelTitre.innerText = "Titre";
-  labelCat.innerText = "Catégorie";
-  labelTitre.setAttribute("for","titre");
-  labelCat.setAttribute("for","categorie");
-  inputTitre.setAttribute("type","text");
-  selectCat.setAttribute("name","categorie");
-
-  rajout.appendChild(contAjoutPh);
-  contAjoutPh.appendChild(imagePhoto);
-  contAjoutPh.appendChild(boutonPhoto);
-  contAjoutPh.appendChild(txtType);
-  rajout.appendChild(formulaire);
-  formulaire.appendChild(labelTitre);
-  formulaire.appendChild(inputTitre);
-  formulaire.appendChild(labelCat);
-  formulaire.appendChild(selectCat);
-
-  /// Création des catégories ///
-  const catNull = document.createElement("option");
-  catNull.innerText = "";
-  selectCat.appendChild(catNull);
-
-  for(let i=0;i<repFiltres.length; i++) {
-    const nomCat = repFiltres[i];
-    const categorie = document.createElement("option");
-    categorie.innerText = nomCat.name;
-    selectCat.appendChild(categorie);
-  }
-
-
+function effacerFiltre (boutons) {
+  const effaceToi = repPhoto.filter( function (photo) {
+    return !(photo.id == boutons);
+    })
+ /*  console.log(effaceToi); */
+ document.querySelector(".modaleProjet").innerHTML="";
+  regenerer(effaceToi,".modaleProjet");
 }
+
 
 ///////// Mise en place des filtres /////
 function mesFiltres () {
@@ -298,10 +293,77 @@ function pasClick (e) {
 }
 
 
+function ouvreModaleAjouter (debutCont, rajout) {
+
+  ///Efface la première modale
+  const disparition = document.querySelector(".modaleProjet div");
+  disparition.innerHTML="";
+
+  ///Retour arrière
+  const boutonRetour= document.createElement("button");
+  const retour = document.createElement("i");
+  boutonRetour.id = "retour";
+  retour.className = "fa-solid fa-arrow-left-long";
+  debutCont.appendChild(boutonRetour);
+  boutonRetour.appendChild(retour);
+  document.querySelector("#retour").addEventListener("click", function (e){
+    e.preventDefault();
+    debutCont.innerHTML ="";
+    creeModale("Galerie photos", "idP");
+  })
+
+  ///Ajoute les nouveaux éléments
+  rajout.className = "modaleAjouter";
+  const contAjoutPh = document.createElement("div");
+  const imagePhoto = document.createElement("i");
+  const boutonPhoto = document.createElement("button");
+  const txtType = document.createElement("p");
+  const formulaire = document.createElement("form");
+  const labelTitre = document.createElement("label");
+  const inputTitre = document.createElement("input");
+  const labelCat = document.createElement("label");
+  const selectCat = document.createElement("select");
+
+  contAjoutPh.className = "contAjoutPhoto";
+  imagePhoto.className = "fa-regular fa-image";
+  boutonPhoto.innerText = "+ Ajouter photo";
+  txtType.innerText = "jpg, png : 4mo max";
+  labelTitre.innerText = "Titre";
+  labelCat.innerText = "Catégorie";
+  labelTitre.setAttribute("for","titre");
+  labelCat.setAttribute("for","categorie");
+  inputTitre.setAttribute("type","text");
+  selectCat.setAttribute("name","categorie");
+
+  rajout.appendChild(contAjoutPh);
+  contAjoutPh.appendChild(imagePhoto);
+  contAjoutPh.appendChild(boutonPhoto);
+  contAjoutPh.appendChild(txtType);
+  rajout.appendChild(formulaire);
+  formulaire.appendChild(labelTitre);
+  formulaire.appendChild(inputTitre);
+  formulaire.appendChild(labelCat);
+  formulaire.appendChild(selectCat);
+
+  /// Création des catégories ///
+  const catNull = document.createElement("option");
+  catNull.innerText = "";
+  selectCat.appendChild(catNull);
+
+  for(let i=0;i<repFiltres.length; i++) {
+    const nomCat = repFiltres[i];
+    const categorie = document.createElement("option");
+    categorie.innerText = nomCat.name;
+    selectCat.appendChild(categorie);
+  }
+
+}
+
 //////////////// Appel des fonctions ///////////////
 
 /// Pour faire apparaitre les projets de la page d'accueil
-main (photos); 
+/* main (photos,null);  */
+main(photos);
 mesFiltres();
 
 /// Pour faire apparaitre tous les éléments du mode admin
