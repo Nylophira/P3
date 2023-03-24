@@ -25,6 +25,7 @@ const tokenB = window.localStorage.getItem("mdp");
 function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
   const conteneur = document.createElement("div");
+
   if (cible == ".modaleProjet") {
     const boutonCroix = document.createElement("button");
     const click = document.createElement("i");
@@ -34,20 +35,32 @@ function regenerer (projet, cible) {
     boutonCroix.id ="fermeture"
     click.className ="fa-solid fa-xmark";
     titreModale.innerText = queltitre;
+    bouton.className = "ajoutPhoto";
     bouton.innerText ="Ajouter une photo";
     href.innerText = "Supprimer la gallerie";
     href.setAttribute("href","#");
     gallerie.appendChild(boutonCroix);
     boutonCroix.appendChild(click);
-    gallerie.appendChild(titreModale);
+    gallerie.appendChild(titreModale)
     gallerie.appendChild(conteneur);
     gallerie.appendChild(bouton);
     gallerie.appendChild(href);
-    /// Ouverture de la modale
+
+    /// Ouverture de la première modale
     const  fermeture = document.querySelector("#fermeture");
     ouvreModale(fermeture); 
 
-
+    /// Ouverture de la 2ème modale 
+    const modifModale = document.querySelector(".ajoutPhoto");
+    modifModale.addEventListener("click", function () {
+        queltitre = "Ajout photo";
+        ouvreModaleAjouter(gallerie, conteneur);
+        titreModale.innerText = queltitre;
+        bouton.innerText = "valider";
+        bouton.className = "validation";
+        href.style.display = "none";
+    })
+    
   }
   
   for (let i=0; i<projet.length; i++) {
@@ -56,8 +69,8 @@ function regenerer (projet, cible) {
     //  Création de l'HTML pour les photos des projets
     const contPhoto = document.createElement("figure");
     const photo = document.createElement("img");
-    photo.src = figure.imageUrl;
     const legende = document.createElement("figcaption");
+    photo.src = figure.imageUrl;
    
     if (quelType) {
       legende.innerText = "editer";
@@ -74,8 +87,9 @@ function regenerer (projet, cible) {
     /// Rajout des petits icones sur les photos en modale
     if (quelType) {
       const contPoubelle = document.createElement("button");
-      contPoubelle.className = "poubelle";
       const poubelle = document.createElement("i");
+      contPoubelle.className = "poubelle";
+      contPoubelle.id = `n°${i+1}-${figure.id}`;
       poubelle.className = "fa-regular fa-trash-can";
       contPhoto.appendChild(contPoubelle);
       contPoubelle.appendChild(poubelle);
@@ -85,7 +99,74 @@ function regenerer (projet, cible) {
 
   }
 
-} 
+}
+
+function ouvreModaleAjouter (debutCont, rajout) {
+
+  ///Efface la première modale
+  const disparition = document.querySelector(".modaleProjet div");
+  disparition.innerHTML="";
+
+  ///Retour arrière
+  const boutonRetour= document.createElement("button");
+  const retour = document.createElement("i");
+  boutonRetour.id = "retour";
+  retour.className = "fa-solid fa-arrow-left-long";
+  debutCont.appendChild(boutonRetour);
+  boutonRetour.appendChild(retour);
+  document.querySelector("#retour").addEventListener("click", function (e){
+    e.preventDefault();
+    debutCont.innerHTML ="";
+    creeModale("Galerie photos", "idP");
+  })
+
+  ///Ajoute les nouveaux éléments
+  rajout.className = "modaleAjouter";
+  const contAjoutPh = document.createElement("div");
+  const imagePhoto = document.createElement("i");
+  const boutonPhoto = document.createElement("button");
+  const txtType = document.createElement("p");
+  const formulaire = document.createElement("form");
+  const labelTitre = document.createElement("label");
+  const inputTitre = document.createElement("input");
+  const labelCat = document.createElement("label");
+  const selectCat = document.createElement("select");
+
+  contAjoutPh.className = "contAjoutPhoto";
+  imagePhoto.className = "fa-regular fa-image";
+  boutonPhoto.innerText = "+ Ajouter photo";
+  txtType.innerText = "jpg, png : 4mo max";
+  labelTitre.innerText = "Titre";
+  labelCat.innerText = "Catégorie";
+  labelTitre.setAttribute("for","titre");
+  labelCat.setAttribute("for","categorie");
+  inputTitre.setAttribute("type","text");
+  selectCat.setAttribute("name","categorie");
+
+  rajout.appendChild(contAjoutPh);
+  contAjoutPh.appendChild(imagePhoto);
+  contAjoutPh.appendChild(boutonPhoto);
+  contAjoutPh.appendChild(txtType);
+  rajout.appendChild(formulaire);
+  formulaire.appendChild(labelTitre);
+  formulaire.appendChild(inputTitre);
+  formulaire.appendChild(labelCat);
+  formulaire.appendChild(selectCat);
+
+  /// Création des catégories ///
+  const catNull = document.createElement("option");
+  catNull.innerText = "";
+  selectCat.appendChild(catNull);
+
+  for(let i=0;i<repFiltres.length; i++) {
+    const nomCat = repFiltres[i];
+    const categorie = document.createElement("option");
+    categorie.innerText = nomCat.name;
+    selectCat.appendChild(categorie);
+  }
+
+
+}
 
 ///////// Mise en place des filtres /////
 function mesFiltres () {
@@ -201,7 +282,6 @@ function ouvreModale (croix) {
   document.querySelector(".modaleProjet").addEventListener("click", pasClick);
   croix.addEventListener("click", fermeModale);
  
-
 }
 
 function fermeModale () {
