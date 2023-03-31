@@ -11,15 +11,12 @@ const repFiltres = await recupFiltres.json();
 const tokenB = window.localStorage.getItem("mdp");
 
 ///// Récupère le fichier json et affiche les projets ////
- /* function main (cible,type) {
-  fetch ("http://localhost:5678/api/works",type) */
   function main (cible) {
     fetch ("http://localhost:5678/api/works")
   .then (Response => Response.json())
   .then (data=> {
     repPhoto = data;
     regenerer(repPhoto, cible);
-    /* console.log("ok !"); */
   })
   .catch (error => console.error(error));
 }
@@ -77,17 +74,11 @@ function regenerer (projet, cible) {
     photo.src = figure.imageUrl;
    
     if (quelType) {
-      /* console.log(cible); */
-      //if (cible !== photos) {
-        /*  console.log(cible); */
         legende.innerText = "editer";
         conteneur.appendChild(contPhoto);
-      //}
     } else {
-      /* console.log(cible); */
        legende.innerText =  figure.title;
-       gallerie.appendChild(contPhoto);
-       
+       gallerie.appendChild(contPhoto);  
     }
     
     contPhoto.appendChild(photo);
@@ -109,28 +100,15 @@ function regenerer (projet, cible) {
 
     ///Effacement des photos
     const quiEffacer = document.querySelectorAll(".poubelle");
-    /* for(let x=0;x<quiEffacer.length;x++) {
+     for(let x=0;x<quiEffacer.length;x++) {
       quiEffacer[x].addEventListener("click", function () {
         let effacement = quiEffacer[x].id;
-        effacer(effacement);
-        // effacerFiltre(effacement);
-          
+        effacer(effacement);          
       })
-    } */
-    test(quiEffacer);
+    }
 }
 
-function test (quoi) {
-  for(let x=0;x<quoi.length;x++) {
-    quoi[x].addEventListener("click", function () {
-      let effacement = quoi[x].id;
-      effacer(effacement);
-      /* effacerFiltre(effacement); */
-        
-    })
-  }
-}
-
+//// Fetch pour effacer les photos
  function effacer (bouton) {
   fetch (`http://localhost:5678/api/works/${bouton}`, {
     method: "DELETE",
@@ -140,63 +118,31 @@ function test (quoi) {
   .then (response => {
     if (response.ok) {
       
-      console.log("suppression ok");
-      document.querySelector(".modaleProjet").innerHTML="";
-      /* main(".modaleProjet"); */
-     /*  document.querySelector(photos).innerHTML="";
-      main(photos); */
       effacerFiltre(bouton, repPhoto);
-      creeModale("Galerie photos", "idP");
+      creeModale("Galerie photos", "idP"); 
 
     } else {
       throw new Error(response.statusText);
     }
   })
-  /*  .then(data => {
-    repPhoto = data; 
-    console.log(repPhoto);
-   effacerFiltre(bouton, repPhoto); 
-  }) */
-  /* .then (main(".modaleProjet")) */
+
   .catch(erreur => {
     console.error(erreur);
-
     })
 } 
 
 
-
+///fonction pour filtrer les photos avant suppression
 function effacerFiltre (boutons, source) {
   const effaceToi = source.filter( function (photo) {
     return !(photo.id == boutons);
     })
- /*  console.log(effaceToi); */
- /*  document.querySelector(".modaleProjet").innerHTML="";
- regenerer(effaceToi,".modaleProjet"); */
 
- ///ci-dessous ne fonctionne plus en cliquant dessus..
- document.querySelector(photos).innerHTML ="";
- quelType = "";
+  document.querySelector(photos).innerHTML ="";
+  quelType = "";
   regenerer(effaceToi,photos); 
-   console.log(effaceToi);
-
- ///fontion regenerer ci-dessous mis à part : elle fonctionne !! J'ai trouvé le souci c'est le if(quelType qui est non vide dans ce cas là et donc bug)
- /*  const gallerie = document.querySelector(photos);
-  const conteneur = document.createElement("div");
-  for (let i=0; i<effaceToi.length; i++) {
-    const figure = effaceToi[i];
-
-    //  Création de l'HTML pour les photos des projets
-    const contPhoto = document.createElement("figure");
-    const photo = document.createElement("img");
-    const legende = document.createElement("figcaption");
-    photo.src = figure.imageUrl;
-    legende.innerText =  figure.title;
-    gallerie.appendChild(contPhoto);
-    contPhoto.appendChild(photo);
-    contPhoto.appendChild(legende); 
-  }*/
   
+  document.querySelector(".modaleProjet").innerHTML="";
 }
 
 
