@@ -22,6 +22,7 @@ const tokenB = window.localStorage.getItem("mdp");
 }
 
 /////////// Code pour récupérer les projets sur l'API //////////
+// La fonction centrale :
 function regenerer (projet, cible) {
   const gallerie = document.querySelector(cible);
   const conteneur = document.createElement("div");
@@ -54,13 +55,14 @@ function regenerer (projet, cible) {
 
     /// Ouverture de la 2ème modale 
     const modifModale = document.querySelector(".ajoutPhoto");
-    modifModale.addEventListener("click", function () {
+    modifModale.addEventListener("click", function (e) {
+        e.preventDefault();
         queltitre = "Ajout photo";
-        ouvreModaleAjouter(gallerie, conteneur);
+        ouvreModaleAjouter(gallerie, conteneur, bouton);
+       /*  modifModale.removeEventListener; */
         titreModale.innerText = queltitre;
-        bouton.innerText = "valider";
-        bouton.className = "validation";
         href.style.display = "none";
+        href.textContent = "";
     })
     
   }
@@ -107,44 +109,6 @@ function regenerer (projet, cible) {
       })
     }
 }
-
-//// Fetch pour effacer les photos
- function effacer (bouton) {
-  fetch (`http://localhost:5678/api/works/${bouton}`, {
-    method: "DELETE",
-    headers: {"Authorization" : `Bearer ${tokenB}`}
-
-  })
-  .then (response => {
-    if (response.ok) {
-      
-      effacerFiltre(bouton, repPhoto);
-      creeModale("Galerie photos", "idP"); 
-
-    } else {
-      throw new Error(response.statusText);
-    }
-  })
-
-  .catch(erreur => {
-    console.error(erreur);
-    })
-} 
-
-
-///fonction pour filtrer les photos avant suppression
-function effacerFiltre (boutons, source) {
-  const effaceToi = source.filter( function (photo) {
-    return !(photo.id == boutons);
-    })
-
-  document.querySelector(photos).innerHTML ="";
-  quelType = "";
-  regenerer(effaceToi,photos); 
-  
-  document.querySelector(".modaleProjet").innerHTML="";
-}
-
 
 
 ///////// Mise en place des filtres /////
@@ -277,7 +241,7 @@ function pasClick (e) {
 }
 
 
-function ouvreModaleAjouter (debutCont, rajout) {
+function ouvreModaleAjouter (debutCont, rajout, validation) {
 
   ///Efface la première modale
   const disparition = document.querySelector(".modaleProjet div");
@@ -299,35 +263,57 @@ function ouvreModaleAjouter (debutCont, rajout) {
   ///Ajoute les nouveaux éléments
   rajout.className = "modaleAjouter";
   const contAjoutPh = document.createElement("div");
+  const formulaire = document.createElement("form");
   const imagePhoto = document.createElement("i");
   const boutonPhoto = document.createElement("button");
+  const chargeImage = document.createElement("input");
   const txtType = document.createElement("p");
-  const formulaire = document.createElement("form");
   const labelTitre = document.createElement("label");
   const inputTitre = document.createElement("input");
   const labelCat = document.createElement("label");
   const selectCat = document.createElement("select");
+  const barre = document.createElement("hr");
 
   contAjoutPh.className = "contAjoutPhoto";
+  formulaire.className = "formAjoutPhoto";
   imagePhoto.className = "fa-regular fa-image";
   boutonPhoto.innerText = "+ Ajouter photo";
+  boutonPhoto.className = "ajouterPhoto";
+  chargeImage.setAttribute("type","file");
+  chargeImage.setAttribute("accept",".png, .jpg")
+  /* chargeImage.required = true; */
+  chargeImage.id = "chargerFichier";
   txtType.innerText = "jpg, png : 4mo max";
   labelTitre.innerText = "Titre";
   labelCat.innerText = "Catégorie";
   labelTitre.setAttribute("for","titre");
   labelCat.setAttribute("for","categorie");
   inputTitre.setAttribute("type","text");
+  inputTitre.required = true;
+  inputTitre.className = "titre";
   selectCat.setAttribute("name","categorie");
 
-  rajout.appendChild(contAjoutPh);
+  // Suppression bouton d'ajout photo pour un input de soumission
+  validation.textContent ="";
+  validation.style.display = "none";
+  const inputTest = document.createElement("input");
+  inputTest.setAttribute("type","submit");
+  inputTest.className="validation";
+  inputTest.setAttribute("value","valider");
+  
+ 
+  rajout.appendChild(formulaire);
+  formulaire.appendChild(contAjoutPh);
   contAjoutPh.appendChild(imagePhoto);
   contAjoutPh.appendChild(boutonPhoto);
+  contAjoutPh.appendChild(chargeImage);
   contAjoutPh.appendChild(txtType);
-  rajout.appendChild(formulaire);
   formulaire.appendChild(labelTitre);
   formulaire.appendChild(inputTitre);
   formulaire.appendChild(labelCat);
   formulaire.appendChild(selectCat);
+  formulaire.appendChild(barre);
+  formulaire.appendChild(inputTest);
 
   /// Création des catégories ///
   const catNull = document.createElement("option");
@@ -341,18 +327,96 @@ function ouvreModaleAjouter (debutCont, rajout) {
     selectCat.appendChild(categorie);
   }
 
+
+  ///Ajout d'une photo en cliquant
+  const boutonAjout = document.querySelector(".ajouterPhoto");
+  boutonAjout.addEventListener("click", function (e) {
+    e.preventDefault();
+    ajoutPhoto();
+  })
+
+      //La met sur le serveur
+      document.querySelector(".formAjoutPhoto").addEventListener("submit", function (event) {
+        // document.querySelector(".validation").addEventListener("submit", function (e) {
+         event.preventDefault();
+         
+         /* let videOuNon = document.querySelector(".ajouterPhoto") */
+         /// A tester avec la methode parent.contains(boutonAjout) :
+         if (boutonAjout) {
+          console.log(boutonAjout);
+         }
+       })
+       /* const titreImg = document.querySelector(".titre").textContent;
+       console.log(titreImg); */
+      /*  const formData = new FormData();
+       formData.append ("title", ) */
+
+}
+
+function ajoutPhoto () {
+  document.querySelector("#chargerFichier").click();
+
+  //Récupère la photo reçue 
+  const chargerFichiers = document.querySelector("#chargerFichier");
+  chargerFichiers.addEventListener("change", function () {
+    const img = chargerFichiers.files[0];
+    const imgEntiere = URL.createObjectURL(img);
+    const conteneur = document.querySelector(".contAjoutPhoto");
+    conteneur.innerHTML="";
+    const imgNew = document.createElement("img");
+    imgNew.src = imgEntiere;
+    conteneur.appendChild(imgNew);
+
+  })
+}
+
+/////////////////// La suppression de photo ///////////
+
+//// Fetch pour effacer les photos
+function effacer (bouton) {
+  fetch (`http://localhost:5678/api/works/${bouton}`, {
+    method: "DELETE",
+    headers: {"Authorization" : `Bearer ${tokenB}`}
+
+  })
+  .then (response => {
+    if (response.ok) {
+      
+      effacerFiltre(bouton, repPhoto);
+      creeModale("Galerie photos", "idP"); 
+
+    } else {
+      throw new Error(response.statusText);
+    }
+  })
+
+  .catch(erreur => {
+    console.error(erreur);
+    })
+} 
+
+
+///fonction pour filtrer les photos avant suppression
+function effacerFiltre (boutons, source) {
+  const effaceToi = source.filter( function (photo) {
+    return !(photo.id == boutons);
+    })
+
+  document.querySelector(photos).innerHTML ="";
+  quelType = "";
+  regenerer(effaceToi,photos); 
+  
+  document.querySelector(".modaleProjet").innerHTML="";
 }
 
 //////////////// Appel des fonctions ///////////////
 
 /// Pour faire apparaitre les projets de la page d'accueil
-/* main (photos,null);  */
 main(photos);
 mesFiltres();
 
 /// Pour faire apparaitre tous les éléments du mode admin
-if (tokenB) {
-  // console.log(`hey ${tokenB}`);  
+if (tokenB) { 
   bandeau();
   coDeco();
   deco();

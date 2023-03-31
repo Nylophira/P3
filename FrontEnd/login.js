@@ -39,10 +39,6 @@
     }  
 }
 
-/* console.log(`pourquoi t'es pas là ? ${token}`); */
-
-
-
 /////Message d'erreur  ////
 function message (MessageErreur) {
     const erreur = document.querySelector(".erreur");

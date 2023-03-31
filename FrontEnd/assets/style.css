@@ -507,6 +507,8 @@ hr {
 	display: flex;
 	flex-direction: column;
 	width: 90%;
+	padding: 20px;
+	border-bottom: none;
 }
 
 
@@ -517,7 +519,7 @@ hr {
 	border-bottom: none;
 	background-color: #E8F1F7;
 	align-items: center;
-	padding: 10px;
+	/* padding: 10px; */
 	
 }
 
@@ -544,6 +546,7 @@ select {
     font-size: 1.2em;
     border: none;
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	margin-bottom: 20px;
 }
 
 
@@ -558,4 +561,21 @@ select {
 
 .fa-arrow-left-long {
 	height: 17px;
+}
+
+hr {
+	border: 0.1px solid #B3B3B3;
+	width: 100%;
+	margin: 20px 0;
+}
+
+.modaleProjet .validation {
+	width: 40%;
+	align-self: center;
+	background-color: #B3B3B3;
+
+}
+
+#chargerFichier {
+	display: none;
 }
