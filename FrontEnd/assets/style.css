@@ -528,6 +528,7 @@ hr {
 	color : #B9C5CC;
 }
 
+
 .contAjoutPhoto button {
 	width: 40%;
 	background-color: #CBD6DC;
@@ -573,9 +574,24 @@ hr {
 	width: 40%;
 	align-self: center;
 	background-color: #B3B3B3;
+	order: 2;
 
 }
 
 #chargerFichier {
 	display: none;
+}
+
+#nonRempli {
+	font-weight: 700;
+	color: red;
+	text-align: center;
+	order: 1;
+	font-size: 18px;
+}
+
+.modaleAjouter .contMsg {
+	border-bottom: none;
+	align-self: center;
+	padding: 10px;
 }

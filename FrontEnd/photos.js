@@ -336,20 +336,56 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
   })
 
       //La met sur le serveur
-      document.querySelector(".formAjoutPhoto").addEventListener("submit", function (event) {
+      const formCible = document.querySelector(".formAjoutPhoto");
+      formCible.addEventListener("submit", function (event) {
         // document.querySelector(".validation").addEventListener("submit", function (e) {
          event.preventDefault();
+         let estOk = check(formCible);
          
-         /* let videOuNon = document.querySelector(".ajouterPhoto") */
-         /// A tester avec la methode parent.contains(boutonAjout) :
-         if (boutonAjout) {
-          console.log(boutonAjout);
-         }
+         if (estOk) {
+          //console.log("coucou !");
+         }       
        })
        /* const titreImg = document.querySelector(".titre").textContent;
        console.log(titreImg); */
       /*  const formData = new FormData();
        formData.append ("title", ) */
+
+}
+
+function check(cible) {
+  let ok = false;
+  // Création du contenu pour le message d'erreur
+  if (!(document.querySelector(".contMsg"))) {
+    const contMsg = document.createElement("div");
+    contMsg.className = "contMsg";
+    cible.appendChild(contMsg);
+   }
+
+  const boutonAjout = document.querySelector(".ajouterPhoto");
+  const contMsg = document.querySelector(".contMsg");
+  const titre = document.querySelector(".titre").value;
+  const categorie = document.querySelector("select[name='categorie']").value;
+
+  const msgErreur = document.createElement("p");
+  msgErreur.id = "nonRempli";
+
+  //Pour effacer le message précédent si existant
+  const msgCree = document.querySelector("#nonRempli");
+  if (msgCree) {
+    contMsg.innerHTML ="";
+  }
+
+  if (cible.contains(boutonAjout)) {
+    msgErreur.innerText = "La photo est absente";
+   } else if (titre.length<3) {
+    msgErreur.innerText = "Le titre est incomplet";
+   } else if (categorie=="") {
+    msgErreur.innerText = "Il manque la catégorie";
+   } else {
+    return ok = true;
+   }
+   contMsg.appendChild(msgErreur);
 
 }
 
