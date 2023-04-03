@@ -289,8 +289,9 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
   labelTitre.setAttribute("for","titre");
   labelCat.setAttribute("for","categorie");
   inputTitre.setAttribute("type","text");
+  inputTitre.setAttribute("name", "title");
   inputTitre.required = true;
-  inputTitre.className = "titre";
+  inputTitre.className = "title";
   selectCat.setAttribute("name","categorie");
 
   // Suppression bouton d'ajout photo pour un input de soumission
@@ -327,6 +328,8 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
     selectCat.appendChild(categorie);
   }
 
+  //nouveauId ();
+
 
   ///Ajout d'une photo en cliquant
   const boutonAjout = document.querySelector(".ajouterPhoto");
@@ -343,15 +346,37 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
          let estOk = check(formCible);
          
          if (estOk) {
-          //console.log("coucou !");
+          /* const formRempli = document.querySelector(".formAjoutPhoto") */;
+          const formData = new FormData(formCible);
+          let chiffre = 1;
+          let newChiffre = nouveauId(chiffre);
+          //console.log(newChiffre);
+          formData.append("id", newChiffre);
+          console.log(formData);
+
          }       
        })
        /* const titreImg = document.querySelector(".titre").textContent;
        console.log(titreImg); */
-      /*  const formData = new FormData();
-       formData.append ("title", ) */
 
 }
+
+////Pour définir un nouvel id pour les photos
+function nouveauId (idN) {
+
+  for(let i=0;i<repPhoto.length; i++) {
+    const numero =  repPhoto[i].id;
+    const fin = repPhoto.length;
+    //console.log(numero);
+    if (numero>(i+1)) {
+      return idN = (i+1);
+    } else if  ((i+1) == fin) {
+      let increment = repPhoto[i].id
+      return idN = increment+1;
+    }
+   }
+}
+
 
 function check(cible) {
   let ok = false;
@@ -364,7 +389,7 @@ function check(cible) {
 
   const boutonAjout = document.querySelector(".ajouterPhoto");
   const contMsg = document.querySelector(".contMsg");
-  const titre = document.querySelector(".titre").value;
+  const titre = document.querySelector(".title").value;
   const categorie = document.querySelector("select[name='categorie']").value;
 
   const msgErreur = document.createElement("p");
