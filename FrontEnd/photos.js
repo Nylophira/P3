@@ -276,12 +276,12 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
 
   contAjoutPh.className = "contAjoutPhoto";
   formulaire.className = "formAjoutPhoto";
+  formulaire.setAttribute("enctype", "multipart/form-data");
   imagePhoto.className = "fa-regular fa-image";
   boutonPhoto.innerText = "+ Ajouter photo";
   boutonPhoto.className = "ajouterPhoto";
   chargeImage.setAttribute("type","file");
   chargeImage.setAttribute("accept",".png, .jpg")
-  /* chargeImage.required = true; */
   chargeImage.id = "chargerFichier";
   txtType.innerText = "jpg, png : 4mo max";
   labelTitre.innerText = "Titre";
@@ -292,7 +292,7 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
   inputTitre.setAttribute("name", "title");
   inputTitre.required = true;
   inputTitre.className = "title";
-  selectCat.setAttribute("name","categorie");
+  selectCat.setAttribute("name","categories");
 
   // Suppression bouton d'ajout photo pour un input de soumission
   validation.textContent ="";
@@ -323,12 +323,12 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
 
   for(let i=0;i<repFiltres.length; i++) {
     const nomCat = repFiltres[i];
+    //console.log(nomCatId);
     const categorie = document.createElement("option");
     categorie.innerText = nomCat.name;
+    categorie.setAttribute("value",nomCat.name);
     selectCat.appendChild(categorie);
   }
-
-  //nouveauId ();
 
 
   ///Ajout d'une photo en cliquant
@@ -341,40 +341,51 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
       //La met sur le serveur
       const formCible = document.querySelector(".formAjoutPhoto");
       formCible.addEventListener("submit", function (event) {
-        // document.querySelector(".validation").addEventListener("submit", function (e) {
+
          event.preventDefault();
          let estOk = check(formCible);
-         
          if (estOk) {
-          /* const formRempli = document.querySelector(".formAjoutPhoto") */;
+
+          let newCatId;
           const formData = new FormData(formCible);
-          let chiffre = 1;
-          let newChiffre = nouveauId(chiffre);
-          //console.log(newChiffre);
-          formData.append("id", newChiffre);
-          console.log(formData);
+          let newPhoto = document.querySelector("#chargerFichier").files[0];
+          const newCat = document.querySelector("select[name='categories']").value;
+
+          //Chercher le nom de la catégorie
+           for (let i=0;i<repFiltres.length; i++) {
+            const quelnom = repFiltres[i].name;
+            if (newCat == quelnom) {
+              newCatId = repFiltres[i].id;
+              console.log("fonctionne");
+            }
+          }
+                   
+          formData.delete("categories");
+          formData.append("image", newPhoto);
+          formData.append("category", newCatId);
+
+          ///Fetch pour enregistrer :
+          fetch ("http://localhost:5678/api/works",{
+            method: 'POST',
+            headers: {
+              'Authorization' : `Bearer ${tokenB}`
+            },
+            body: formData
+          })
+          .then(response => {
+            if (response.ok) {
+              console.log("contenu ajouté !");
+            } else {
+              throw new Error(response.statusText);
+            }
+          })
+          .catch (erreur => {
+            console.error(erreur);
+          })
 
          }       
        })
-       /* const titreImg = document.querySelector(".titre").textContent;
-       console.log(titreImg); */
 
-}
-
-////Pour définir un nouvel id pour les photos
-function nouveauId (idN) {
-
-  for(let i=0;i<repPhoto.length; i++) {
-    const numero =  repPhoto[i].id;
-    const fin = repPhoto.length;
-    //console.log(numero);
-    if (numero>(i+1)) {
-      return idN = (i+1);
-    } else if  ((i+1) == fin) {
-      let increment = repPhoto[i].id
-      return idN = increment+1;
-    }
-   }
 }
 
 
@@ -390,7 +401,7 @@ function check(cible) {
   const boutonAjout = document.querySelector(".ajouterPhoto");
   const contMsg = document.querySelector(".contMsg");
   const titre = document.querySelector(".title").value;
-  const categorie = document.querySelector("select[name='categorie']").value;
+  const categorie = document.querySelector("select[name='categories']").value;
 
   const msgErreur = document.createElement("p");
   msgErreur.id = "nonRempli";
@@ -417,19 +428,30 @@ function check(cible) {
 function ajoutPhoto () {
   document.querySelector("#chargerFichier").click();
 
-  //Récupère la photo reçue 
+  //Récupère la photo reçue et donne une URL non blob
   const chargerFichiers = document.querySelector("#chargerFichier");
   chargerFichiers.addEventListener("change", function () {
-    const img = chargerFichiers.files[0];
-    const imgEntiere = URL.createObjectURL(img);
-    const conteneur = document.querySelector(".contAjoutPhoto");
-    conteneur.innerHTML="";
-    const imgNew = document.createElement("img");
-    imgNew.src = imgEntiere;
-    conteneur.appendChild(imgNew);
+    const image = chargerFichiers.files[0];
+    //const newFile = new FileReader();
+   // newFile.onloadend = function (e) {
+      //const conversion = e.target.result;
+      const conversion = URL.createObjectURL(image);
+      const conteneur = document.querySelector(".contAjoutPhoto");
+      const suppression = conteneur.querySelectorAll("*:scope> *:not(#chargerFichier)");
+      suppression.forEach ( function (balise) {
+        conteneur.removeChild(balise);
+      });
+
+      const imgNew = document.createElement("img");
+      imgNew.className = "newPhoto";
+      imgNew.src = conversion;
+      conteneur.appendChild(imgNew); 
+    //}
+    //newFile.readAsDataURL(image);
 
   })
 }
+
 
 /////////////////// La suppression de photo ///////////
 
