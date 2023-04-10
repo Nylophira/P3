@@ -59,7 +59,6 @@ function regenerer (projet, cible) {
         e.preventDefault();
         queltitre = "Ajout photo";
         ouvreModaleAjouter(gallerie, conteneur, bouton);
-       /*  modifModale.removeEventListener; */
         titreModale.innerText = queltitre;
         href.style.display = "none";
         href.textContent = "";
@@ -78,6 +77,7 @@ function regenerer (projet, cible) {
     if (quelType) {
         legende.innerText = "editer";
         conteneur.appendChild(contPhoto);
+       
     } else {
        legende.innerText =  figure.title;
        gallerie.appendChild(contPhoto);  
@@ -210,8 +210,8 @@ function creeModale (titre, type) {
   
   queltitre = titre;
   quelType = type;
- 
-   main(modaleProjet);
+  
+  main(modaleProjet);
  
  }
 
@@ -323,7 +323,6 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
 
   for(let i=0;i<repFiltres.length; i++) {
     const nomCat = repFiltres[i];
-    //console.log(nomCatId);
     const categorie = document.createElement("option");
     categorie.innerText = nomCat.name;
     categorie.setAttribute("value",nomCat.name);
@@ -356,7 +355,6 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
             const quelnom = repFiltres[i].name;
             if (newCat == quelnom) {
               newCatId = repFiltres[i].id;
-              console.log("fonctionne");
             }
           }
                    
@@ -374,7 +372,15 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
           })
           .then(response => {
             if (response.ok) {
-              console.log("contenu ajouté !");
+              
+              //Supprimer les données de la modale ajout et la regenerer
+              document.querySelector(".modaleProjet").innerHTML="";
+              main(".modaleProjet");
+
+              ///Effacement des données de la gallerie et la regenerer
+              document.querySelector(photos).innerHTML ="";
+              regenArriere();
+            
             } else {
               throw new Error(response.statusText);
             }
@@ -382,12 +388,40 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
           .catch (erreur => {
             console.error(erreur);
           })
-
-         }       
+         }   
        })
 
 }
 
+///Pour regenerer uniquement la page accueil sans toucher aux modales
+function regenArriere () {
+
+  fetch ("http://localhost:5678/api/works")
+  .then (Response => Response.json())
+  .then (data=> {
+    repPhoto = data;
+    const gallerie = document.querySelector(photos);
+    for (let i=0; i<repPhoto.length; i++) {
+      const figure = repPhoto[i];
+      //  Création de l'HTML pour les photos des projets
+      const contPhoto = document.createElement("figure");
+      const photo = document.createElement("img");
+      const legende = document.createElement("figcaption");
+      photo.src = figure.imageUrl;
+
+      legende.innerText =  figure.title;
+      gallerie.appendChild(contPhoto); 
+
+      contPhoto.appendChild(photo);
+      contPhoto.appendChild(legende);
+    }
+  })
+  .catch (error => console.error(error));
+
+}
+
+
+////////////// fonctions pour ajouter les photos //////
 
 function check(cible) {
   let ok = false;
@@ -481,9 +515,19 @@ function effacer (bouton) {
 
 ///fonction pour filtrer les photos avant suppression
 function effacerFiltre (boutons, source) {
-  const effaceToi = source.filter( function (photo) {
+  let effaceToi;
+  if (boutons == "") {
+
+    effaceToi = source.filter (function (photo) {
+    return (photo.id);
+    })
+
+  } else {
+    effaceToi = source.filter( function (photo) {
     return !(photo.id == boutons);
     })
+  }
+  
 
   document.querySelector(photos).innerHTML ="";
   quelType = "";
