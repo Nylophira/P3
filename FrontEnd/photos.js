@@ -144,8 +144,7 @@ function mesFiltres () {
       })
       document.querySelector(photos).innerHTML = '';
       regenerer(saufObjet, photos);
-    })
-    
+    })  
   }
 }
 
@@ -179,7 +178,6 @@ function coDeco () {
 function icoModif (cible, quelIcone) {
  const parent = document.querySelector(cible);
  const conteneur = document.createElement("a");
-/*  a changer pour la modale */
  conteneur.setAttribute("href","#")
  conteneur.className = "icoModif";
  conteneur.id = quelIcone;
@@ -302,7 +300,6 @@ function ouvreModaleAjouter (debutCont, rajout, validation) {
   inputTest.className="validation";
   inputTest.setAttribute("value","valider");
   
- 
   rajout.appendChild(formulaire);
   formulaire.appendChild(contAjoutPh);
   contAjoutPh.appendChild(imagePhoto);
@@ -462,26 +459,21 @@ function check(cible) {
 function ajoutPhoto () {
   document.querySelector("#chargerFichier").click();
 
-  //Récupère la photo reçue et donne une URL non blob
+  //Récupère la photo reçue et donne une URL blob
   const chargerFichiers = document.querySelector("#chargerFichier");
   chargerFichiers.addEventListener("change", function () {
     const image = chargerFichiers.files[0];
-    //const newFile = new FileReader();
-   // newFile.onloadend = function (e) {
-      //const conversion = e.target.result;
-      const conversion = URL.createObjectURL(image);
-      const conteneur = document.querySelector(".contAjoutPhoto");
-      const suppression = conteneur.querySelectorAll("*:scope> *:not(#chargerFichier)");
-      suppression.forEach ( function (balise) {
+    const conversion = URL.createObjectURL(image);
+    const conteneur = document.querySelector(".contAjoutPhoto");
+    const suppression = conteneur.querySelectorAll("*:scope> *:not(#chargerFichier)");
+    suppression.forEach (function (balise) {
         conteneur.removeChild(balise);
-      });
+    });
 
-      const imgNew = document.createElement("img");
-      imgNew.className = "newPhoto";
-      imgNew.src = conversion;
-      conteneur.appendChild(imgNew); 
-    //}
-    //newFile.readAsDataURL(image);
+    const imgNew = document.createElement("img");
+    imgNew.className = "newPhoto";
+    imgNew.src = conversion;
+    conteneur.appendChild(imgNew); 
 
   })
 }
@@ -528,7 +520,6 @@ function effacerFiltre (boutons, source) {
     })
   }
   
-
   document.querySelector(photos).innerHTML ="";
   quelType = "";
   regenerer(effaceToi,photos); 

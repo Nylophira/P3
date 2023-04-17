@@ -378,8 +378,6 @@ footer nav ul {
 
 /******************** Partie modale ****************/
 
-
-
 .modaleCont {
 	display: none;
 	background-color: rgba(0, 0, 0, 0.648);
@@ -406,20 +404,17 @@ footer nav ul {
 
 }
 
- .modaleProjet div {
+.modaleProjet div {
 
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	/* height: 70%; */
 	height: auto;
 	width: auto;
 	padding: 40px 20px;
 	border-bottom: 1px solid rgba(156, 152, 152, 0.948);
 	justify-content: space-between;
 	
-
-
 }
 
  .fa-xmark {
@@ -437,12 +432,6 @@ footer nav ul {
 }
 
  .modaleCont figure {
-	
-	/* height: 134px; */
-/* 	height: 40%; */
-	/* width: auto; */
-	/* display: flex;
-	flex-direction: column; */
 	width: 15%;
 	padding: 10px;
 	position: relative;
@@ -518,9 +507,7 @@ hr {
 	justify-content: space-around;
 	border-bottom: none;
 	background-color: #E8F1F7;
-	align-items: center;
-	/* padding: 10px; */
-	
+	align-items: center;	
 }
 
 .fa-image {
